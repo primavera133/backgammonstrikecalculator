@@ -36,7 +36,7 @@ export const calcLikelyhood = (
       blockedOne = true;
     }
 
-    for (let dieTwo = 1; dieTwo < 7; dieTwo++) {
+    for (let dieTwo = dieOne; dieTwo < 7; dieTwo++) {
       let blockedTwo = false;
 
       if (blockedPips.includes(start + dieOne + dieTwo)) {
