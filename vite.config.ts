@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import react from "@vitejs/plugin-react-swc";
 //@ts-expect-error untyped path
 import path from "path";
@@ -13,5 +14,8 @@ export default defineConfig({
     alias: {
       "@": root,
     },
+  },
+  test: {
+    include: ["src/**/*.test.ts"],
   },
 });
