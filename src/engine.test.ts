@@ -94,3 +94,52 @@ test("calcLikelyhood, no blockers", () => {
   ];
   expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
 });
+
+test("calcLikelyhood, with blockers", () => {
+  let fromPos = "1";
+  let toPos = "3";
+  let blockers: {
+    blocked: string | undefined;
+  }[] = [{ blocked: "2" }];
+
+  let expected = [
+    [1, 2],
+    [2, 2],
+    [2, 3],
+    [2, 4],
+    [2, 5],
+    [2, 6],
+  ];
+  expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
+
+  fromPos = "5";
+  toPos = "7";
+  blockers = [{ blocked: "6" }];
+
+  expected = [
+    [1, 2],
+    [2, 2],
+    [2, 3],
+    [2, 4],
+    [2, 5],
+    [2, 6],
+  ];
+  expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
+
+  fromPos = "1";
+  toPos = "7";
+  blockers = [{ blocked: "2" }, { blocked: "6" }];
+
+  expected = [
+    [1, 6],
+    [2, 2],
+    [2, 4],
+    [2, 6],
+    [3, 3],
+    [3, 6],
+    [4, 6],
+    [5, 6],
+    [6, 6],
+  ];
+  expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
+});
