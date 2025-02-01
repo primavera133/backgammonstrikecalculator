@@ -1,7 +1,7 @@
 import { Provider } from "@/components/ui/provider";
 import { Box, Heading, Image } from "@chakra-ui/react";
 import "./App.css";
-import { Form } from "./Form";
+import { Form } from "./components/Form";
 
 function App() {
   return (

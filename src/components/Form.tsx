@@ -11,7 +11,9 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import { calcLikelyhood, formatLikelyhood, getDistance } from "./engine";
+import { calcLikelyhood, formatLikelyhood } from "../engine";
+import { Distance } from "./Distance";
+import { ValidBlockers } from "./ValidBlockers";
 
 interface FormValues {
   fromPos: string;
@@ -45,9 +47,6 @@ export const Form = () => {
   });
 
   const onSubmit = handleSubmit(({ fromPos, toPos, blockers }: FormValues) => {
-    console.clear();
-    console.log("onSubmit", fromPos, toPos, blockers);
-
     const hits = calcLikelyhood(fromPos, toPos, blockers);
     setHits(hits);
     if (hits.length === 0) setError("not possible to hit!");
@@ -144,8 +143,8 @@ export const Form = () => {
       {hits && hits.length > 0 && (
         <Box my={4}>
           <Heading as="h3">Result</Heading>
-          <Box>Distance: {getDistance(fromPos, toPos)} pips</Box>
-          <Box>{blockers && <>Blockers: {blockers.length} pips blocked</>}</Box>
+          <Distance fromPos={fromPos} toPos={toPos} />
+          <ValidBlockers blockers={blockers} />
           <Box>
             Chance to roll a hit: {hits.length}/36 or{" "}
             {formatLikelyhood(hits.length)}%

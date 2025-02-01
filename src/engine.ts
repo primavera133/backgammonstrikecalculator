@@ -6,25 +6,29 @@ export const getDistance = (
   return Math.abs(parseInt(fromPos, 10) - parseInt(toPos, 10));
 };
 
+export const getValidBlockedPips = (
+  blockers: { blocked?: string | undefined }[] | undefined
+) => {
+  if (!blockers) return [];
+  return blockers
+    .map((b) => {
+      if (b.blocked?.length) return b.blocked;
+    })
+    .filter((b) => {
+      return b !== undefined;
+    })
+    .map((b) => parseInt(b, 10));
+};
+
 export const calcLikelyhood = (
   fromPos: string,
   toPos: string,
   blockers: { blocked: string | undefined }[]
 ) => {
-  //   console.clear();
-  const distance = getDistance(fromPos, toPos);
-  console.log("distance", distance);
-  console.log("blockers", blockers);
-
   const start = Math.min(parseInt(fromPos, 10), parseInt(toPos, 10));
   const end = Math.max(parseInt(fromPos, 10), parseInt(toPos, 10));
-  console.log("start", start);
-  console.log("end", end);
 
-  const blockedPips = blockers
-    .map((b) => b.blocked)
-    .filter((b) => b !== undefined)
-    .map((b) => parseInt(b, 10));
+  const blockedPips = getValidBlockedPips(blockers);
 
   const hits: [number, number][] = [];
 
@@ -32,7 +36,6 @@ export const calcLikelyhood = (
     let blockedOne = false;
 
     if (blockedPips.includes(start + dieOne)) {
-      console.log("blocked dieOne", dieOne);
       blockedOne = true;
     }
 
@@ -40,7 +43,6 @@ export const calcLikelyhood = (
       let blockedTwo = false;
 
       if (blockedPips.includes(start + dieOne + dieTwo)) {
-        console.log("blocked dieTwo", dieTwo);
         blockedTwo = true;
       }
 
@@ -77,8 +79,6 @@ export const calcLikelyhood = (
     }
   }
 
-  console.log("total hits", hits.length);
-  console.log("hits", hits);
   return hits;
 };
 
