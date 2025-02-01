@@ -3,54 +3,60 @@ import {
   Box,
   Button,
   GridItem,
+  Heading,
   Input,
   SimpleGrid,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { calcLikelyhood, formatLikelyhood, getDistance } from "./engine";
 
 interface FormValues {
-  fromPos: number;
-  toPos: number;
-  blocked: number;
+  fromPos: string;
+  toPos: string;
+  blockers: {
+    blocked: string | undefined;
+  }[];
 }
 
 export const Form = () => {
-  const [hits, setHits] = useState<number>(0);
+  const [hits, setHits] = useState<[number, number][]>();
   const [error, setError] = useState("");
   const {
-    getValues,
+    control,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<FormValues>({
+    defaultValues: {
+      blockers: [{ blocked: undefined }],
+    },
+  });
 
-  const onSubmit = handleSubmit(({ fromPos, toPos, blocked }: FormValues) => {
-    console.log("fromPos", fromPos);
-    if (fromPos > 24 || fromPos < 1) return setError("Invalid from position");
-    if (toPos > 24 || toPos < 1) return setError("Invalid to position");
+  const { fromPos, toPos, blockers } = useWatch({
+    control,
+  });
 
-    const distance = Math.abs(fromPos - toPos);
+  const { fields, append, remove } = useFieldArray({
+    name: "blockers",
+    control,
+  });
 
-    if (distance <= blocked) {
-      return setError("Not possible, too many blocked");
-    }
-    const hits = calcLikelyhood(distance, blocked);
+  const onSubmit = handleSubmit(({ fromPos, toPos, blockers }: FormValues) => {
+    console.clear();
+    console.log("onSubmit", fromPos, toPos, blockers);
+
+    const hits = calcLikelyhood(fromPos, toPos, blockers);
     setHits(hits);
-    if (hits === 0) setError("not possible to hit!");
+    if (hits.length === 0) setError("not possible to hit!");
   });
 
   const reset = () => {
-    setHits(0);
+    setHits(undefined);
     setError("");
   };
-
-  const fromPos = getValues("fromPos");
-  const toPos = getValues("toPos");
-  const blocked = getValues("blocked");
 
   return (
     <form onSubmit={onSubmit}>
@@ -88,34 +94,66 @@ export const Form = () => {
               />
             </Field>
           </GridItem>
-          <GridItem>
-            <Field
-              label="Blocked positions"
-              invalid={!!errors.blocked}
-              errorText={errors.blocked?.message}
-            >
-              <Input
-                {...register("blocked", {
-                  onChange: reset,
-                  max: 22,
-                })}
-              />
-            </Field>
-          </GridItem>
         </SimpleGrid>
+
+        <Box>
+          <Heading as="h3" size="md">
+            Blocked pips
+          </Heading>
+          {fields.map((field, index) => {
+            return (
+              <Field
+                key={field.id}
+                mb={2}
+                // label="Blocked position"
+                invalid={!!errors.blockers}
+                //   errorText={errors.blockers?.message}
+              >
+                <Input
+                  {...register(`blockers.${index}.blocked` as const, {
+                    //   onChange: reset,
+                    min: 1,
+                    max: 24,
+                  })}
+                />
+              </Field>
+            );
+          })}
+        </Box>
+
+        <Button
+          size="xs"
+          variant="surface"
+          onClick={() =>
+            append({
+              blocked: undefined,
+            })
+          }
+        >
+          Add blocked pip
+        </Button>
+        <Button size="xs" variant="surface" onClick={() => remove(0)}>
+          Remove blocked pip
+        </Button>
 
         {error && <Text color={"darkred"}>{error}</Text>}
         <Button variant="surface" type="submit">
           Submit
         </Button>
       </Stack>
-      {hits > 0 && (
-        <Box my={6}>
-          <Text textStyle={"3xl"}>
-            For a distance of {getDistance(fromPos, toPos)} pips{" "}
-            {blocked && <span>, and with {blocked} pips blocked, </span>}
-            the chances to roll a hit are {hits}/36 or {formatLikelyhood(hits)}%
-          </Text>
+      {hits && hits.length > 0 && (
+        <Box my={4}>
+          <Heading as="h3">Result</Heading>
+          <Box>Distance: {getDistance(fromPos, toPos)} pips</Box>
+          <Box>{blockers && <>Blockers: {blockers.length} pips blocked</>}</Box>
+          <Box>
+            Chance to roll a hit: {hits.length}/36 or{" "}
+            {formatLikelyhood(hits.length)}%
+          </Box>
+          <Box>
+            Successfull rolls:{" "}
+            <>{hits.map((hit) => `${hit[0]}+${hit[1]}`).join(", ")}</>
+          </Box>
         </Box>
       )}
     </form>
