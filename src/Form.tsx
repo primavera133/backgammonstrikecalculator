@@ -31,7 +31,7 @@ export const Form = () => {
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
-      blockers: [{ blocked: undefined }],
+      blockers: [],
     },
   });
 
