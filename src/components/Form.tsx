@@ -66,7 +66,7 @@ export const Form = () => {
         <SimpleGrid gap={4} columns={3}>
           <GridItem>
             <Field
-              label="From postion"
+              label="From pip"
               invalid={!!errors.fromPos}
               errorText={errors.fromPos?.message}
             >
@@ -84,13 +84,13 @@ export const Form = () => {
           </GridItem>
           <GridItem>
             <Field
-              label="To position"
+              label="Blot"
               invalid={!!errors.toPos}
               errorText={errors.toPos?.message}
             >
               <Input
                 {...register("toPos", {
-                  required: "To position value is required",
+                  required: "Blot position value is required",
                   min: 1,
                   max: 24,
                   onChange: reset,
