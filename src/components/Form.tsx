@@ -2,8 +2,10 @@ import { Field } from "@/components/ui/field";
 import {
   Box,
   Button,
+  Flex,
   GridItem,
   Heading,
+  IconButton,
   Input,
   SimpleGrid,
   Stack,
@@ -11,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { LuMinus } from "react-icons/lu";
 import { calcLikelyhood, formatLikelyhood } from "../engine";
 import { Distance } from "./Distance";
 import { ValidBlockers } from "./ValidBlockers";
@@ -74,6 +77,7 @@ export const Form = () => {
                   max: 24,
                   onChange: reset,
                 })}
+                bgColor={"white"}
               />
             </Field>
           </GridItem>
@@ -90,6 +94,7 @@ export const Form = () => {
                   max: 24,
                   onChange: reset,
                 })}
+                bgColor={"white"}
               />
             </Field>
           </GridItem>
@@ -101,21 +106,32 @@ export const Form = () => {
           </Heading>
           {fields.map((field, index) => {
             return (
-              <Field
-                key={field.id}
-                mb={2}
-                // label="Blocked position"
-                invalid={!!errors.blockers}
-                //   errorText={errors.blockers?.message}
-              >
-                <Input
-                  {...register(`blockers.${index}.blocked` as const, {
-                    //   onChange: reset,
-                    min: 1,
-                    max: 24,
-                  })}
-                />
-              </Field>
+              <Flex key={field.id}>
+                <Field
+                  mb={2}
+                  mr={2}
+                  // label="Blocked position"
+                  invalid={!!errors.blockers}
+                  //   errorText={errors.blockers?.message}
+                >
+                  <Input
+                    {...register(`blockers.${index}.blocked` as const, {
+                      //   onChange: reset,
+                      min: 1,
+                      max: 24,
+                    })}
+                    bgColor={"white"}
+                  />
+                </Field>
+                <IconButton
+                  aria-label="Remove blocked pip"
+                  size="xs"
+                  variant="surface"
+                  onClick={() => remove(index)}
+                >
+                  <LuMinus />
+                </IconButton>
+              </Flex>
             );
           })}
         </Box>
@@ -130,9 +146,6 @@ export const Form = () => {
           }
         >
           Add blocked pip
-        </Button>
-        <Button size="xs" variant="surface" onClick={() => remove(0)}>
-          Remove blocked pip
         </Button>
 
         {error && <Text color={"darkred"}>{error}</Text>}
