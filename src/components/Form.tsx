@@ -78,6 +78,7 @@ export const Form = () => {
                   onChange: reset,
                 })}
                 bgColor={"white"}
+                color="black"
               />
             </Field>
           </GridItem>
@@ -95,6 +96,7 @@ export const Form = () => {
                   onChange: reset,
                 })}
                 bgColor={"white"}
+                color="black"
               />
             </Field>
           </GridItem>
@@ -121,6 +123,7 @@ export const Form = () => {
                       max: 24,
                     })}
                     bgColor={"white"}
+                    color="black"
                   />
                 </Field>
                 <IconButton
