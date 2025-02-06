@@ -142,4 +142,24 @@ test("calcLikelyhood, with blockers", () => {
     [6, 6],
   ];
   expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
+
+  fromPos = "4";
+  toPos = "10";
+  blockers = [
+    { blocked: "5" },
+    { blocked: "6" },
+    { blocked: "7" },
+    { blocked: "8" },
+  ];
+
+  expected = [
+    [1, 5],
+    [1, 6],
+    [2, 6],
+    [3, 6],
+    [4, 6],
+    [5, 6],
+    [6, 6],
+  ];
+  expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
 });

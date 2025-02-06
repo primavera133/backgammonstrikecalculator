@@ -33,48 +33,41 @@ export const calcLikelyhood = (
   const hits: [number, number][] = [];
 
   for (let dieOne = 1; dieOne < 7; dieOne++) {
-    let blockedOne = false;
-
-    if (blockedPips.includes(start + dieOne)) {
-      blockedOne = true;
-    }
-
     for (let dieTwo = dieOne; dieTwo < 7; dieTwo++) {
-      let blockedTwo = false;
-
-      if (blockedPips.includes(start + dieOne + dieTwo)) {
-        blockedTwo = true;
-      }
-
-      if (!blockedOne && start + dieOne === end) hits.push([dieOne, dieTwo]);
-      else if (!blockedTwo && start + dieTwo === end)
+      if (!blockedPips.includes(start + dieOne) && start + dieOne === end)
+        hits.push([dieOne, dieTwo]); // direct hit on die one
+      else if (!blockedPips.includes(start + dieTwo) && start + dieTwo === end)
+        // direct hit on die two
         hits.push([dieOne, dieTwo]);
-      else if (!blockedOne && !blockedTwo && start + dieOne + dieTwo === end) {
+      else if (
+        !blockedPips.includes(start + dieOne) &&
+        start + dieOne + dieTwo === end
+      ) {
+        // hit on dieOne then dieTwo
+        hits.push([dieOne, dieTwo]);
+      } else if (
+        !blockedPips.includes(start + dieTwo) &&
+        start + dieTwo + dieOne === end
+      ) {
+        // hit on dieTwo then dieOne
         hits.push([dieOne, dieTwo]);
       } else if (dieOne === dieTwo) {
         //doubling
-        if (!blockedOne && start + dieOne + dieOne === end)
-          hits.push([dieOne, dieTwo]);
+        if (!blockedPips.includes(start + dieOne) && start + dieOne * 2 === end)
+          hits.push([dieOne, dieTwo]); // hit on double two steps
         else if (
-          !blockedOne &&
-          !blockedTwo &&
-          start + dieOne + dieOne + dieTwo === end
+          !blockedPips.includes(start + dieOne) &&
+          !blockedPips.includes(start + dieOne * 2) &&
+          start + dieOne * 3 === end
         )
-          hits.push([dieOne, dieTwo]);
+          hits.push([dieOne, dieTwo]); // hit on double three steps
         else if (
-          !blockedOne &&
-          !blockedTwo &&
-          start + dieOne + dieOne + dieTwo + dieTwo === end
+          !blockedPips.includes(start + dieOne) &&
+          !blockedPips.includes(start + dieOne * 2) &&
+          !blockedPips.includes(start + dieOne * 3) &&
+          start + dieOne * 4 === end
         )
-          hits.push([dieOne, dieTwo]);
-        else if (
-          !blockedOne &&
-          !blockedTwo &&
-          start + dieOne + dieTwo + dieTwo + dieTwo === end
-        )
-          hits.push([dieOne, dieTwo]);
-        else if (!blockedTwo && start + dieTwo + dieTwo + dieTwo === end)
-          hits.push([dieOne, dieTwo]);
+          hits.push([dieOne, dieTwo]); // hit on double four steps
       }
     }
   }
