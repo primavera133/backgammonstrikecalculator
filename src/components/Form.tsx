@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import { LuMinus } from "react-icons/lu";
+import { LuMinus, LuPlus } from "react-icons/lu";
 import { calcLikelyhood, formatLikelyhood } from "../engine";
 import { Distance } from "./Distance";
 import { ValidBlockers } from "./ValidBlockers";
@@ -63,28 +63,10 @@ export const Form = () => {
   return (
     <form onSubmit={onSubmit}>
       <Stack gap="4" align="flex-start" maxW="sm">
-        <SimpleGrid gap={4} columns={3}>
+        <SimpleGrid gap={4} columns={3}  alignItems={"end"}>
           <GridItem>
             <Field
-              label="From pip"
-              invalid={!!errors.fromPos}
-              errorText={errors.fromPos?.message}
-            >
-              <Input
-                {...register("fromPos", {
-                  required: "From position value is required",
-                  min: 1,
-                  max: 24,
-                  onChange: reset,
-                })}
-                bgColor={"white"}
-                color="black"
-              />
-            </Field>
-          </GridItem>
-          <GridItem>
-            <Field
-              label="Blot"
+              label="Blot position"
               invalid={!!errors.toPos}
               errorText={errors.toPos?.message}
             >
@@ -100,11 +82,42 @@ export const Form = () => {
               />
             </Field>
           </GridItem>
+          <GridItem>
+            <Field
+              label="Strike from (bar=0 or 25)"
+              invalid={!!errors.fromPos}
+              errorText={errors.fromPos?.message}
+            >
+              <Input
+                {...register("fromPos", {
+                  required: "From position value is required",
+                  min: 0,
+                  max: 25,
+                  onChange: reset,
+                })}
+                bgColor={"white"}
+                color="black"
+              />
+            </Field>
+          </GridItem>
+
         </SimpleGrid>
 
         <Box>
-          <Heading as="h3" size="md">
-            Blocked pips
+          <Heading as="h3" size="md" mb={2}>
+            Blocked pips <IconButton
+                  aria-label="Add blocked pip"
+                  size="xs"
+                  variant="surface"
+                  onClick={() =>
+                    append({
+                      blocked: undefined,
+                    })
+                  }
+                >
+                  <LuPlus />
+                </IconButton>
+
           </Heading>
           {fields.map((field, index) => {
             return (
@@ -112,15 +125,12 @@ export const Form = () => {
                 <Field
                   mb={2}
                   mr={2}
-                  // label="Blocked position"
                   invalid={!!errors.blockers}
-                  //   errorText={errors.blockers?.message}
                 >
                   <Input
                     {...register(`blockers.${index}.blocked` as const, {
-                      //   onChange: reset,
-                      min: 1,
-                      max: 24,
+                      min: 0,
+                      max: 25,
                     })}
                     bgColor={"white"}
                     color="black"
@@ -139,17 +149,6 @@ export const Form = () => {
           })}
         </Box>
 
-        <Button
-          size="xs"
-          variant="surface"
-          onClick={() =>
-            append({
-              blocked: undefined,
-            })
-          }
-        >
-          Add blocked pip
-        </Button>
 
         {error && <Text color={"darkred"}>{error}</Text>}
         <Button variant="surface" type="submit">

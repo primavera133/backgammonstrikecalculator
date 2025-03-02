@@ -29,11 +29,11 @@ export const calcLikelyhood = (
   const end = Math.max(parseInt(fromPos, 10), parseInt(toPos, 10));
 
   const blockedPips = getValidBlockedPips(blockers);
-
+  
   const hits: [number, number][] = [];
-
+  
   for (let dieOne = 1; dieOne < 7; dieOne++) {
-    for (let dieTwo = dieOne; dieTwo < 7; dieTwo++) {
+    for (let dieTwo = 1; dieTwo < 7; dieTwo++) {
       if (!blockedPips.includes(start + dieOne) && start + dieOne === end)
         hits.push([dieOne, dieTwo]); // direct hit on die one
       else if (!blockedPips.includes(start + dieTwo) && start + dieTwo === end)

@@ -40,6 +40,11 @@ test("calcLikelyhood, no blockers", () => {
     [1, 4],
     [1, 5],
     [1, 6],
+    [2, 1],
+    [3, 1],
+    [4, 1],
+    [5, 1],
+    [6, 1],
   ];
   expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
 
@@ -53,6 +58,11 @@ test("calcLikelyhood, no blockers", () => {
     [1, 4],
     [1, 5],
     [1, 6],
+    [2, 1],
+    [3, 1],
+    [4, 1],
+    [5, 1],
+    [6, 1],
   ];
   expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
 
@@ -65,17 +75,23 @@ test("calcLikelyhood, no blockers", () => {
     [1, 4],
     [2, 2],
     [2, 4],
+    [3, 1],
     [3, 4],
+    [4, 1],
+    [4, 2],
+    [4, 3],
     [4, 4],
     [4, 5],
     [4, 6],
+    [5, 4],
+    [6, 4],
   ];
   expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
 
   fromPos = "1";
   toPos = "12";
   blockers = [];
-  expected = [[5, 6]];
+  expected = [[5, 6], [6, 5]];
   expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
 
   fromPos = "1";
@@ -95,6 +111,106 @@ test("calcLikelyhood, no blockers", () => {
   expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
 });
 
+test("calcLikelyhood, from bar, no blockers", () => {
+  let fromPos = "0";
+  let toPos = "6";
+  let blockers: {
+    blocked: string | undefined;
+  }[] = [];
+
+  let expected = [
+    [1, 5],
+    [1, 6],
+    [2, 2],
+    [2, 4],
+    [2, 6],
+    [3, 3],
+    [3, 6],
+    [4, 2],
+    [4, 6],
+    [5, 1],
+    [5, 6],
+    [6, 1],
+    [6, 2],
+    [6, 3],
+    [6, 4],
+    [6, 5],
+    [6, 6],
+  ];
+
+  fromPos = "25";
+  toPos = "19";
+  blockers = [];
+
+  expected = [
+    [1, 5],
+    [1, 6],
+    [2, 2],
+    [2, 4],
+    [2, 6],
+    [3, 3],
+    [3, 6],
+    [4, 2],
+    [4, 6],
+    [5, 1],
+    [5, 6],
+    [6, 1],
+    [6, 2],
+    [6, 3],
+    [6, 4],
+    [6, 5],
+    [6, 6],
+  ];
+
+  expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
+});
+
+test("calcLikelyhood, from bar, with blockers", () => {
+  let fromPos = "0";
+  let toPos = "2";
+  let blockers: {
+    blocked: string | undefined;
+  }[] = [{ blocked: "1"}];
+
+  let expected = [
+    [1, 2],
+    [2, 1],
+    [2, 2],
+    [2, 3],
+    [2, 4],
+    [2, 5],
+    [2, 6],
+    [3, 2],
+    [4, 2],
+    [5, 2],
+    [6, 2],
+  ];
+
+  fromPos = "25";
+  toPos = "19";
+  blockers = [{ blocked: "21"}, {blocked: "23"}];
+
+  expected = [
+    [1, 5],
+    [1, 6],
+    [2, 6],
+    [3, 3],
+    [3, 6],
+    [4, 6],
+    [5, 1],
+    [5, 6],
+    [6, 1],
+    [6, 2],
+    [6, 3],
+    [6, 4],
+    [6, 5],
+    [6, 6],
+  ];
+
+  expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
+});
+
+
 test("calcLikelyhood, with blockers", () => {
   let fromPos = "1";
   let toPos = "3";
@@ -104,11 +220,16 @@ test("calcLikelyhood, with blockers", () => {
 
   let expected = [
     [1, 2],
+    [2, 1],
     [2, 2],
     [2, 3],
     [2, 4],
     [2, 5],
     [2, 6],
+    [3, 2],
+    [4, 2],
+    [5, 2],
+    [6, 2],
   ];
   expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
 
@@ -118,11 +239,16 @@ test("calcLikelyhood, with blockers", () => {
 
   expected = [
     [1, 2],
+    [2, 1],
     [2, 2],
     [2, 3],
     [2, 4],
     [2, 5],
     [2, 6],
+    [3, 2],
+    [4, 2],
+    [5, 2],
+    [6, 2],
   ];
   expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
 
@@ -137,8 +263,14 @@ test("calcLikelyhood, with blockers", () => {
     [2, 6],
     [3, 3],
     [3, 6],
+    [4, 2],
     [4, 6],
     [5, 6],
+    [6, 1],
+    [6, 2],
+    [6, 3],
+    [6, 4],
+    [6, 5],
     [6, 6],
   ];
   expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
@@ -158,7 +290,13 @@ test("calcLikelyhood, with blockers", () => {
     [2, 6],
     [3, 6],
     [4, 6],
+    [5, 1],
     [5, 6],
+    [6, 1],
+    [6, 2],
+    [6, 3],
+    [6, 4],
+    [6, 5],
     [6, 6],
   ];
   expect(calcLikelyhood(fromPos, toPos, blockers)).toStrictEqual(expected);
